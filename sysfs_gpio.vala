@@ -48,9 +48,9 @@ class SysFsGPIO : Object, GPIO {
 	public PinState read(int pin) {
 		var f = File.new_for_path("/sys/class/gpio/gpio%d/value".printf(pin));
 		try {
-			var value_dos = new DataInputStream(f.read());
+			var value_dis = new DataInputStream(f.read());
 			uint8[] data = new uint8[1];
-			value_dos.read(data);
+			value_dis.read(data);
 			if (data[0] == '1') {
 				return PinState.HIGH;
 			}

@@ -17,25 +17,33 @@
  */
 
 using Gtk;
+using Cairo;
 
-int main (string[] args) {
-    // Initialize the GPIO's.
-    GPIO gpio = new SysFsGPIO();
+public class Application : Gtk.Window {
+	private GPIOMap gpio_map = new GPIOMap("./gpiomap.csv");
+	public Application() {
+		this.title = "GPIO Controller";
+		this.destroy.connect(Gtk.main_quit);
+		set_default_size(500, 500);
+		create_widgets();
+	}
+	private void create_widgets() {
+		var drawing_area = new DrawingArea();
+		drawing_area.draw.connect(on_draw);
+		add(drawing_area);
+	}
+	private bool on_draw(Widget w, Context ctx) {
+		gpio_map.render(500, 500, ctx);
+		return true;
+	}
+	static int main(string[] args) {
+		Gtk.init(ref args);
 
-    // Initialize GTK.
-    Gtk.init (ref args);
+		var application = new Application();
+		application.show_all();
 
-    var window = new Window ();
-    window.title = "GPIO Controller";
-    window.set_default_size (200, 200);
-    window.destroy.connect (Gtk.main_quit);
+		Gtk.main();
 
-    /* You can add GTK+ widgets to your window here.
-     * See https://developer.gnome.org/ for help.
-     */
-
-    window.show_all ();
-
-    Gtk.main ();
-    return 0;
+		return 0;
+	}
 }
